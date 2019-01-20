@@ -4,9 +4,18 @@
 class Map {
     /**
      * Create a map
-     * @param {array} rowImages - Path da imagem do bloco 
-     * @param {number} numRows - QUantidade de Linhas
-     * @param {number} numCols - Quantidade de Colunas
+     * 
+     * @constructor
+     * @param {Object} rowImages Objeto contendo Path e tipo do mapa
+     * @param {Object} rowImages.x
+     * @param {String} rowImages.x.rowImage Path da imagem 
+     * @param {String} rowImages.x.type Tipo da imagem
+     * @param {Object} dimensions Objeto contendo informações sobre o mapa, os dados servirão para gerar o mapa randomicamente
+     * @param {Number} dimensions.sizeRow Tamanho da linha
+     * @param {Number} dimensions.sizeCol Tamanho da coluna
+     * @param {Number} dimensions.numCols Quantidade de colunas
+     * @param {Number} dimensions.numRows Quantidade de linhas
+     * @param {Number} minEnemies Número mínimo de inimigos suportados no mapa
      */
     constructor(rowImages, dimensions = { sizeRow: 83, sizeCol: 101, numCols: 5, numRows: 9 }, minEnemies = 5) {
         rowImages = rowImages || {
