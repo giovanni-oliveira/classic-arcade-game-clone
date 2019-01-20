@@ -10,7 +10,9 @@ Fliperama clássico
 
 Não são necessários ajustes para iniciar o jogo.
 
-A configuração default do mapa, dos inimigos e do jogador serão inicializados, para alteração manipule o arquivo js/app.js passando os valores para o construtor das devidas classe.
+A configuração default do mapa, dos inimigos e do jogador serão inicializados, para alteração manipule o arquivo js/app.js passando os valores para o construtor das devidas classes.
+
+Ao colidir com os inimigos ou chegar ao objetivo o jogo é reiniciado e o mapa e os inimigos são randomizados novamente.
 
 ## Contribuição
 
