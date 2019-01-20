@@ -17,7 +17,7 @@ class Enemy {
             y,
             baseMove
         });
-    }
+    };
 
 
     /**
@@ -26,12 +26,12 @@ class Enemy {
      * @memberof Enemy
      * @method update
      * @param {number} dt Delta, número randômico para modificar a velocidade do Inimigo
-     * @return {void}
+     * @returns {void}
      */
     update(dt, max) {
-        const random = (dt * this.baseMove)
+        const random = (dt * this.baseMove);
         this.x = this.x > max ? -(this.baseMove + random) : this.x + random;       
-    }
+    };
 
 
     /**
@@ -39,9 +39,9 @@ class Enemy {
      * 
      * @memberof Enemy
      * @method render
-     * @return {void}
+     * @returns {void}
      */
     render() {      
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
+    };
 }

@@ -28,7 +28,7 @@ class Map {
      * 
      * @memberof Map
      * @method createMap
-     * @return {array} Vetor contento as imagens do cenário randomizadas
+     * @returns {array} Vetor contento as imagens do cenário randomizadas
      */
     createMap() {
         /** A primeira posição do mapa sempre será a água representando o objetivo */
@@ -77,7 +77,7 @@ class Map {
      * 
      * @memberof Map
      * @method render
-     * @return {void}
+     * @returns {void}
      */
     render() {
         const {width, height, numRows, numCols, sizeRow, sizeCol} = this.dimensions;
@@ -103,7 +103,7 @@ class Map {
      * 
      * @memberof Map
      * @method getMap
-     * @return {array} Cenário do jogo
+     * @returns {array} Cenário do jogo
      */
     getMap() {
         if(this.map) {
@@ -117,7 +117,7 @@ class Map {
     /**
      * Retorna a posição inicial do Player
      * 
-     * @return {Array.<Number>}
+     * @returns {Array.<Number>}
      */
     getPosStart() {      
         return [this.posStartX, this.postStartY]
@@ -129,7 +129,7 @@ class Map {
      * 
      * @memberof Map
      * @method init
-     * @return {void}
+     * @returns {void}
      */
     init() {        
         this.map = this.createMap();

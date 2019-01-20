@@ -16,7 +16,7 @@ class Player {
             y,
             moves
         });
-    }
+    };
 
     
     /**
@@ -25,14 +25,14 @@ class Player {
      * @memberof Player
      * @method update
      * @param {Array} dt Valor da movimento do player
-     * @return {void}
+     * @returns {void}
      */
     update(x = this.x, y = this.y) {        
         const { clientHeight, clientWidth } = ctx.canvas;
         
         this.x = x < clientWidth && x >= 0 ? x : this.x;
         this.y = y < (clientHeight - 157) && y >= -31 ? y : this.y;
-    }
+    };
 
 
     /**
@@ -41,14 +41,14 @@ class Player {
      * @memberof Player
      * @method handleInput
      * @param {string} dt Direção do player 
-     * @return {void}
+     * @returns {void}
      */
     handleInput(dt) {
         if(dt === 'left' || dt === 'right')
             this.update(this.x + this.moves[dt], this.y);  
         else
             this.update(this.x, this.y + this.moves[dt]);                        
-    }
+    };
 
 
     /**
@@ -58,12 +58,12 @@ class Player {
      * @method reset
      * @param {Number} x Ponto x
      * @param {Number} y Ponto y
-     * @return {void}
+     * @returns {void}
      */
     reset(x, y) {
         this.x = x;
         this.y = y;
-    }
+    };
 
 
     /**
@@ -71,9 +71,9 @@ class Player {
      * 
      * @memberof Player
      * @method render
-     * @return {void}
+     * @returns {void}
      */
     render() {       
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
+    };
 }

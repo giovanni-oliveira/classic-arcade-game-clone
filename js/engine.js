@@ -36,14 +36,14 @@ var Engine = (function(global) {
         const renderAll = e => e.render();
         /**! É necessário que o map esteja na primeira opção */
         [map, ...allEnemies, player].forEach(renderAll);
-    }
+    };
 
 
     /**
      * Checa as posições do player e dos inimigos para resetar quando acontecer colisão
      * 
      * @function checkCollisions
-     * @return {void}
+     * @returns {void}
      */
     const checkCollisions = () => {
         const { x: startPlayerX, y: startPlayerY } = player;
@@ -61,40 +61,41 @@ var Engine = (function(global) {
                  reset();
 
         })
-    }
+    };
 
 
     /**
      * Atualiza as entidades
      * 
      * @param {number} dt - Valor randômico
-     * @return {void}
+     * @returns {void}
      */
     const updateEntities = dt => {
         const updateEnemies = e => e.update(dt, map.dimensions.width);
         allEnemies.forEach(updateEnemies);   
         
         player.update();
-    }
+    };
 
 
     /**
      * Atualiza as Entidades
      * 
      * @param {dt} dt - Valor randômico
-     * @return {void}
+     * @returns {void}
      */
     const update = dt => {
         updateEntities(dt);
         checkCollisions();
-    }
+    };
 
 
     /**
-     * Adiciona inimigos nos devidos lugares do mapa
+     * Adiciona inimigos nos devidos lugares do mapa. As posiçções dos inimigos serão randomizadas,
+     * tanto a y quanto x. x sempre iniciará negativamente
      * 
      * @param {Array.<Object>} mapRow Vetor com objetos que formam o cenário
-     * @return {Array.<Enemy>}
+     * @returns {Array.<Enemy>}
      */
     const createEnemy  = mapRow => {
         let enemies = [];
@@ -113,14 +114,14 @@ var Engine = (function(global) {
         mapRow.forEach(addEnemies);   
 
         return enemies;
-    }
+    };
 
 
     /**
      * Função utilizado para intermediar a inicialização e as atualizações
      * 
      * @function main
-     * @return {void}
+     * @returns {void}
      */
     const main = () => {
         const now = Date.now();
@@ -133,28 +134,28 @@ var Engine = (function(global) {
 
         if(isPlaying)
             window.requestAnimationFrame(main);            
-    }
+    };
 
 
     /**
      * Função utilizada para resetar o jogo quando acontecer colisão ou quando o player alcançar a chegada
      * 
      * @function reset
-     * @return {void}
+     * @returns {void}
      */
     const reset = () => {
         isPlaying = false;
         player.reset(...map.getPosStart());
         ctx.clearRect(0, 0, map.dimensions.width, map.dimensions.height);
         init();
-    }
+    };
 
 
     /**
      * Método responsável por inicializar o mapa e o loop
      * 
      * @function init
-     * @return {void}
+     * @returns {void}
      */
     const init = () => {
         map.init();
@@ -163,7 +164,7 @@ var Engine = (function(global) {
         isPlaying = true;
         renderEntities();
         main();
-    }
+    };
 
 
     /* Go ahead and load all of the images we know we're going to need to
