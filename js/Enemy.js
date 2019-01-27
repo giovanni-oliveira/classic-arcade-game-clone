@@ -1,22 +1,20 @@
 /**
- * Class representing an enemy
+ * Essa classe representa um inimigo
  */
-class Enemy {
+class Enemy extends Character {
     /**
-     * Create a enemy
+     * Cria um inimigo
      * 
-     * @param {String} sprite Path do ícone
+     * @constructor
      * @param {Number} x Posição inicial no eixo horizontal
      * @param {Number} y Posição inicial no eixo vertical
      * @param {Number} baseMove - Valor base para movimento
+     * @param {String} sprite Path do ícone
      */ 
-    constructor(sprite = 'images/enemy-bug.png', x = 0, y = 0, baseMove = 50) {
-        Object.assign(this, {
-            sprite,
-            x,
-            y,
-            baseMove
-        });
+    constructor(x, y, baseMove = 50, sprite) {
+        super(sprite = 'images/enemy-bug.png', x, y);
+        
+        Object.assign(this, { sprite, x, y, baseMove });
     };
 
 
@@ -26,22 +24,11 @@ class Enemy {
      * @memberof Enemy
      * @method update
      * @param {number} dt Delta, número randômico para modificar a velocidade do Inimigo
+     * @param {number} max Ponto x máximo da tela
      * @returns {void}
      */
     update(dt, max) {
         const random = (dt * this.baseMove);
         this.x = this.x > max ? -(this.baseMove + random) : this.x + random;       
-    };
-
-
-    /**
-     * Desenha no Canvas um enemy
-     * 
-     * @memberof Enemy
-     * @method render
-     * @returns {void}
-     */
-    render() {      
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     };
 }

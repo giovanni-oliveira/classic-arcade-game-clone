@@ -22,25 +22,34 @@ var Engine = (function(global) {
     const doc = global.document;
     const canvas = doc.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    let lastTime, isPlaying;
+    let lastTime, idMainAnimation, isPlaying;
     
     canvas.width = map.dimensions.width;
     canvas.height = map.dimensions.height;
+    
     doc.body.appendChild(canvas);
     
 
+    if(map instanceof Map === false || player instanceof Player === false) 
+        throw 'Crie instâncias válidas de Map e Player';
+
+
     /**
      * Invoca o método render das entidades
+     * 
+     * @function renderEntities
+     * @returns {void}
      */
     const renderEntities = () => {
         const renderAll = e => e.render();
         /**! É necessário que o map esteja na primeira opção */
         [map, ...allEnemies, player].forEach(renderAll);
+        canvas.background = 'red';
     };
 
 
     /**
-     * Checa as posições do player e dos inimigos para resetar quando acontecer colisão
+     * Checa as posições do player e dos inimigos para resetar quando acontecer a colisão
      * 
      * @function checkCollisions
      * @returns {void}
@@ -54,11 +63,15 @@ var Engine = (function(global) {
             const endEnemyX = startEnemyX + 80;
             const endEnemyY = startEnemyY + 80;
             
-            if((startPlayerX < endEnemyX && endPlayerX > startEnemyX) && (startPlayerY < endEnemyY && endPlayerY > startEnemyY))
+            if((startPlayerX < endEnemyX && endPlayerX > startEnemyX) && (startPlayerY < endEnemyY && endPlayerY > startEnemyY)) {
+                map.resetScore();
                 reset();
+            }
                 
-            if(startPlayerY < 50)
-                 reset();
+            if(startPlayerY < 50 && isPlaying) {
+                map.increaseScore();
+                reset();
+            }
 
         })
     };
@@ -67,6 +80,7 @@ var Engine = (function(global) {
     /**
      * Atualiza as entidades
      * 
+     * @function updateEntities
      * @param {number} dt - Valor randômico
      * @returns {void}
      */
@@ -81,6 +95,7 @@ var Engine = (function(global) {
     /**
      * Atualiza as Entidades
      * 
+     * @function update
      * @param {dt} dt - Valor randômico
      * @returns {void}
      */
@@ -94,19 +109,20 @@ var Engine = (function(global) {
      * Adiciona inimigos nos devidos lugares do mapa. As posiçções dos inimigos serão randomizadas,
      * tanto a y quanto x. x sempre iniciará negativamente
      * 
+     * @function createEnemies
      * @param {Array.<Object>} mapRow Vetor com objetos que formam o cenário
      * @returns {Array.<Enemy>}
      */
-    const createEnemy  = mapRow => {
+    const createEnemies  = mapRow => {
         let enemies = [];
         const getRandom = (max, min) => Math.floor(Math.random() * (max - min) ) + min;
 
-        const addEnemies = ({type}, row) => {
+        const addEnemies = ({ type }, row) => {
             if(type === 'enemy') {
-                const baseMove = getRandom(150, 75);
-                const x = -getRandom(5, 50);              
+                const baseMove = getRandom(200, 75) + (map.getScore() * 4);
+                const x = -getRandom(50, 20);              
                 const y = (row * 83) - 17;
-                const newEnemy = new Enemy(undefined, x, y, baseMove); 
+                const newEnemy = new Enemy(x, y, baseMove); 
 
                 enemies.push(newEnemy);
             }
@@ -126,14 +142,14 @@ var Engine = (function(global) {
     const main = () => {
         const now = Date.now();
         const dt = (now - lastTime) / 1000.0;
-                
-        update(dt);
-        renderEntities();
-
+        
         lastTime = now;
-
-        if(isPlaying)
-            window.requestAnimationFrame(main);            
+        
+        if(isPlaying) {
+            update(dt);
+            renderEntities();
+            idMainAnimation = window.requestAnimationFrame(main);            
+        }
     };
 
 
@@ -145,9 +161,15 @@ var Engine = (function(global) {
      */
     const reset = () => {
         isPlaying = false;
-        player.reset(...map.getPosStart());
-        ctx.clearRect(0, 0, map.dimensions.width, map.dimensions.height);
-        init();
+        window.cancelAnimationFrame(idMainAnimation);
+        
+        setTimeout(function() {
+            window.requestAnimationFrame(() => {
+                player.reset(...map.getPosStart());
+                ctx.clearRect(0, 0, map.dimensions.width, map.dimensions.height);
+                init();
+            });
+        }, 200);
     };
 
 
@@ -159,7 +181,7 @@ var Engine = (function(global) {
      */
     const init = () => {
         map.init();
-        allEnemies = createEnemy(map.getMap());
+        allEnemies = createEnemies(map.getMap());
         lastTime = Date.now();
         isPlaying = true;
         renderEntities();
@@ -167,18 +189,30 @@ var Engine = (function(global) {
     };
 
 
-    /* Go ahead and load all of the images we know we're going to need to
-     * draw our game level. Then set init as the callback method, so that when
-     * all of these images are properly loaded our game will start.
+    /**
+     * Carrega a fonte e as imagens necessárias para iniciar o jogo
+     * 
+     * @async
+     * @function startEngine
+     * @return {void}
      */
-    Resources.load([
-        'images/stone-block.png',
-        'images/water-block.png',
-        'images/grass-block.png',
-        'images/enemy-bug.png',
-        'images/char-boy.png'
-    ]);
-    Resources.onReady(init);
+    async function startEngine() {
+        const font = new FontFace('Permanent Marker', 'url(https://fonts.gstatic.com/s/permanentmarker/v7/Fh4uPib9Iyv2ucM6pGQMWimMp004La2Cfw.woff2)');
+        await font.load();
+        document.fonts.add(font);
+
+        Resources.load([
+            'images/stone-block.png',
+            'images/water-block.png',
+            'images/grass-block.png',
+            'images/enemy-bug.png',
+            'images/char-boy.png'
+        ]);
+        Resources.onReady(init);
+    }
+
+
+    startEngine();
 
     /* Assign the canvas' context object to the global variable (the window
      * object when run in a browser) so that developers can use it more easily

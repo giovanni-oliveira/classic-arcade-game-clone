@@ -1,17 +1,24 @@
 /**
- * Class representing a player
+ * Essa classe representa um player
  */
-class Player {
+class Player extends Character {
     /**
-     * Create a player
-     * @param {string} sprite - Path do ícone
-     * @param {number} x - Posição inicial no eixo horizontal
-     * @param {number} y - Posição inicial no eixo vertical
-     * @param {object} moves - Valores usados para a movimentação do player
+     * Cria um player
+     * 
+     * @constructor
+     * @param {Number} x Posição inicial no eixo horizontal
+     * @param {Number} y Posição inicial no eixo vertical
+     * @param {Object} moves Valores usados para a movimentação do player
+     * @param {Number} moves.left 
+     * @param {Number} moves.right
+     * @param {Number} moves.up
+     * @param {Number} moves.down
+     * @param {String} sprite Path do ícone
      */
     constructor(x = 0, y = 0, moves = { left: -101, right: 101, up: -83, down: 83 }, sprite = 'images/char-boy.png') {
+        super(sprite, x, y);
+        
         Object.assign(this, {
-            sprite,
             x,
             y,
             moves
@@ -28,10 +35,10 @@ class Player {
      * @returns {void}
      */
     update(x = this.x, y = this.y) {        
-        const { clientHeight, clientWidth } = ctx.canvas;
+        const { clientHeight, clientWidth } = window.ctx.canvas;
         
         this.x = x < clientWidth && x >= 0 ? x : this.x;
-        this.y = y < (clientHeight - 157) && y >= -31 ? y : this.y;
+        this.y = y + 110 < clientHeight  && y >= -31 ? y : this.y;
     };
 
 
@@ -40,14 +47,16 @@ class Player {
      * 
      * @memberof Player
      * @method handleInput
-     * @param {string} dt Direção do player 
+     * @param {String} direction Direção do player 
      * @returns {void}
      */
-    handleInput(dt) {
-        if(dt === 'left' || dt === 'right')
-            this.update(this.x + this.moves[dt], this.y);  
-        else
-            this.update(this.x, this.y + this.moves[dt]);                        
+    handleInput(direction) {   
+        if(direction === 'left' || direction === 'right') {
+            this.update(this.x + this.moves[direction], this.y);  
+        }
+        else {
+            this.update(this.x, this.y + this.moves[direction]);                        
+        }
     };
 
 
@@ -63,17 +72,5 @@ class Player {
     reset(x, y) {
         this.x = x;
         this.y = y;
-    };
-
-
-    /**
-     * Desenha no Canvas um player
-     * 
-     * @memberof Player
-     * @method render
-     * @returns {void}
-     */
-    render() {       
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     };
 }

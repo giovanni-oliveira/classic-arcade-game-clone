@@ -1,9 +1,9 @@
 /**
- * Class representing a Map
+ * Essa classe representa um Map
  */
 class Map {
     /**
-     * Create a map
+     * Cria um map
      * 
      * @constructor
      * @param {Object} rowImages Objeto contendo Path e tipo do mapa
@@ -16,8 +16,9 @@ class Map {
      * @param {Number} dimensions.numCols Quantidade de colunas
      * @param {Number} dimensions.numRows Quantidade de linhas
      * @param {Number} minEnemies Número mínimo de inimigos suportados no mapa
+     * @param {Number} score Pontuação do jogador
      */
-    constructor(rowImages, dimensions = { sizeRow: 83, sizeCol: 101, numCols: 5, numRows: 9 }, minEnemies = 5) {
+    constructor(rowImages, dimensions = { sizeRow: 83, sizeCol: 101, numCols: 5, numRows: 9 }, minEnemies = 5, score = 0) {
         rowImages = rowImages || {
             water: { rowImage: 'images/water-block.png', type: 'arrival' },
             stone: { rowImage: 'images/stone-block.png', type: 'enemy' },
@@ -25,10 +26,10 @@ class Map {
         };      
         const posStartX = Math.floor(dimensions.numCols / 2) * dimensions.sizeCol;
         const postStartY = ((dimensions.numRows - 1) * 83) - 17;
-        dimensions.height = dimensions.numRows * dimensions.sizeCol;
+        dimensions.height = (dimensions.numRows * dimensions.sizeCol) - 74;
         dimensions.width = dimensions.numCols * dimensions.sizeCol;
 
-        Object.assign(this, { rowImages, dimensions, minEnemies, posStartX, postStartY });
+        Object.assign(this, { rowImages, dimensions, minEnemies, posStartX, postStartY, score });
     }
 
 
@@ -99,11 +100,13 @@ class Map {
             row * sizeRow
         ];
 
-        for (let row = 0; row < numRows; row++) {
+        for (let row = 0; row < numRows; row++) {            
             for (let col = 0; col < numCols; col++) {
                 ctx.drawImage(...positionImage(row, col));
             }
         }
+
+        this.renderScore();
     }
 
     
@@ -126,10 +129,63 @@ class Map {
     /**
      * Retorna a posição inicial do Player
      * 
+     * @memberof Map
+     * @method getPosStart
      * @returns {Array.<Number>}
      */
     getPosStart() {      
         return [this.posStartX, this.postStartY]
+    }
+
+
+    /**
+     * Renderiza o score do jogador
+     * 
+     * @memberof Map
+     * @method renderScore
+     * @returns {void}
+     */
+    renderScore() {
+        ctx.fillStyle = "black";
+        ctx.font = "30px Permanent Marker";
+        ctx.fillText(`SCORE: ${this.score}`, 10, 35);
+    }
+
+
+    /**
+     * Retorna o valor do score
+     * 
+     * @memberof Map
+     * @method getScore
+     * @returns {number}
+     */
+    getScore() {
+        return this.score;
+    }
+
+
+    /**
+     * Reinicia o score do jogo
+     * 
+     * @memberof Map
+     * @method resetScore
+     * @returns {void}
+     */
+    resetScore() {
+        this.score = 0;
+    }
+
+
+    /**
+     * Acrescenta o score do jogador
+     * 
+     * @memberof Map
+     * @method increaseScore
+     * @param {number} [score=1] Número que será incrementado no score
+     * @returns {void}
+     */
+    increaseScore(score = 1) {
+        this.score += score;    
     }
 
 
@@ -140,7 +196,7 @@ class Map {
      * @method init
      * @returns {void}
      */
-    init() {        
+    init() {      
         this.map = this.createMap();
         this.render();       
     }
